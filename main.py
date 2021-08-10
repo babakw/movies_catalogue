@@ -13,8 +13,8 @@ def homepage():
 
 @app.context_processor
 def utility_processor():
-    def tmdb_image_url(path):
-        return tmdb_client.get_poster_url(path)
+    def tmdb_image_url(path,size):
+        return tmdb_client.get_poster_url(path,size)
     return {"tmdb_image_url": tmdb_image_url}
 
 if __name__ == '__main__':
