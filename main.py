@@ -1,20 +1,21 @@
 from flask import Flask, render_template
-import requests
+import tmdb_client
 
 app = Flask(__name__)
 
-def get_popular_movies():
-    endpoint = "https://api.themoviedb.org/3/movie/popular"
-    headers = {
-        "Authorization": f"Bearer {'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlZTZjZTc1NjcxMDdmODg3OWM1MWRkOTk0OWMzMjllNCIsInN1YiI6IjYxMTAzMjBiNGE1MmY4MDA0NTQ0YjY5ZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.EN72uVMWl8EZZCA-DEvJHkKvZwCqt0-4ONOw6RbV8zk'}"
-    }
-    response = requests.get(endpoint, headers=headers)
-    return response.json()
-
 @app.route('/')
+
 def homepage():
-    movies = get_popular_movies()
+    movies = tmdb_client.get_popular_movies()["results"]
+    # for movie in movies:
+    #     print(tmdb_client.get_poster_url(movie["poster_path"]))
     return render_template("homepage.html", movies=movies)
+
+@app.context_processor
+def utility_processor():
+    def tmdb_image_url(path):
+        return tmdb_client.get_poster_url(path)
+    return {"tmdb_image_url": tmdb_image_url}
 
 if __name__ == '__main__':
     app.run(debug=True)
